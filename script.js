@@ -23,14 +23,66 @@ const displayCategories=(categories)=>{
     `
 
     categories.forEach(cat => {
-        const catbtn = document.createElement('div')
-        catbtn.innerHTML=`
+        // const catbtn = document.createElement('button')
+        // catbtn.innerHTML=`
         
-        <button class="btn font-medium text-slate-800 border rounded-full ">${cat}</button>
-        `
-        categoriesContainer.append(catbtn)
+        // <button onclick="loadCategoryProducts("${cat}")" class="btn font-medium text-slate-800 border rounded-full ">${cat}</button>
+        // `
+        // categoriesContainer.append(catbtn)
+        const button = document.createElement('button')
+        button.innerText= cat 
+        button.className = "btn font-medium text-slate-800 border rounded-full "
+
+        button.addEventListener("click",()=>{
+            loadCategoryProducts(cat)
+        })
+        categoriesContainer.append(button)
 
     })
+}
+
+
+const displayCategoryProducts = (products)=>{
+    const categoryProductsContainer=document.getElementById('product-card')
+    categoryProductsContainer.innerHTML=''
+
+    products.forEach(cate=>{
+        const cateContainer=document.createElement('div')
+        cateContainer.innerHTML=`
+        <div class="card bg-[#F9FAFB] lg:w-60  shadow-sm">
+  <figure>
+    <img
+      src="${cate.image}"
+      alt="Shoes"  class="h-48 w-48" />
+  </figure>
+  <div class="card-body h-48 ">
+    <h2 class="card-title flex justify-between">
+      ${cate.category}
+      <div class="badge badge-secondary">${cate.rating.rate}</div>
+    </h2>
+    <p>${cate.title}</p>
+    <h1 class="font-bold">$${cate.price}</h1>
+    <div class="card-actions justify-between">
+      <div class="badge badge-outline"><i class="fa-solid fa-circle-info"></i>Details</div>
+      <div class="badge badge-outline"><i class="fa-solid fa-cart-shopping"></i>Add</div>
+    </div>
+  </div>
+</div>   
+        `
+        categoryProductsContainer.append(cateContainer)
+        
+    })
+}
+
+const loadCategoryProducts= async (category)=>{
+    try{
+        const res = await fetch(`https://fakestoreapi.com/products/category/${encodeURIComponent(category)}`)
+    const data= await res.json()
+    displayCategoryProducts(data)
+    }
+    catch(error){
+        console.log('error found')
+    }
 }
 
 const loadAllProducts = async()=>{
