@@ -42,6 +42,42 @@ const displayCategories=(categories)=>{
 }
 
 
+   const displayModal = (details)=>{
+    const modalContainer = document.getElementById('modal-content')
+    modalContainer.innerHTML=`
+    <h3 class="text-lg font-bold">${details.title}</h3>
+    <p class="py-4">${details.description}</p>
+    <div class="flex justify-between">
+    <h3 class="text-lg font-bold">$${details.price}</h3>
+    <h3 class="text-lg font-bold"><i class="fa-solid text-amber-400 fa-star"></i>${details.rating.rate}(${details.rating.count})</h3>
+    </div>
+    <div class="flex justify-start gap-8">
+    <button class="text-base btn btn-primary font-bold">Buy Now</button>
+    <button class="text-base btn btn-primary font-bold">Add to Cart</button>
+    </div>
+    
+     
+    `
+    document.getElementById('details-modal').showModal()
+
+
+
+   }
+
+const loadModal = async(id)=>{
+    try{
+        const  res = await fetch(`https://fakestoreapi.com/products/${id}`)
+        const data = await res.json()
+        displayModal(data)
+    }
+    catch(error){
+        console.log('find error')
+    }
+
+}
+  
+
+
 const displayCategoryProducts = (products)=>{
     const categoryProductsContainer=document.getElementById('product-card')
     categoryProductsContainer.innerHTML=''
@@ -56,15 +92,15 @@ const displayCategoryProducts = (products)=>{
       alt="Shoes"  class="h-48 w-48" />
   </figure>
   <div class="card-body h-48 ">
-    <h2 class="card-title flex justify-between">
+    <h2 class="card-title  flex justify-between">   
       ${cate.category}
-      <div class="badge badge-secondary">${cate.rating.rate}</div>
+      <div class="badge badge-secondary"><i class="fa-solid text-amber-400 fa-star"></i>${cate.rating.rate}(${cate.rating.count})</div>
     </h2>
     <p>${cate.title}</p>
     <h1 class="font-bold">$${cate.price}</h1>
     <div class="card-actions justify-between">
-      <div class="badge badge-outline"><i class="fa-solid fa-circle-info"></i>Details</div>
-      <div class="badge badge-outline"><i class="fa-solid fa-cart-shopping"></i>Add</div>
+      <button onclick="loadModal(${cate.id})" class="badge badge-outline"><i class="fa-solid fa-circle-info"></i>Details</button>
+      <button class="badge badge-outline"><i class="fa-solid fa-cart-shopping"></i>Add</button>
     </div>
   </div>
 </div>   
@@ -120,8 +156,8 @@ const displayAllProducts = (products)=>{
     <p>${product.title}</p>
     <h1 class="font-bold">$${product.price}</h1>
     <div class="card-actions justify-between">
-      <div class="badge badge-outline"><i class="fa-solid fa-circle-info"></i>Details</div>
-      <div class="badge badge-outline"><i class="fa-solid fa-cart-shopping"></i>Add</div>
+      <button onclick="loadModal(${product.id})" class="badge badge-outline"><i class="fa-solid fa-circle-info"></i>Details</button>
+      <button class="badge badge-outline"><i class="fa-solid fa-cart-shopping"></i>Add</button>
     </div>
   </div>
 </div>
