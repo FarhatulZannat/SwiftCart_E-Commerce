@@ -16,6 +16,7 @@ const displayCategories=(categories)=>{
          
 
     const categoriesContainer = document.getElementById("categories-container")
+    document.getElementById('top').style.display='none'
     categoriesContainer.innerHTML=''
     categoriesContainer.innerHTML = `
      
@@ -91,16 +92,18 @@ const displayCategoryProducts = (products)=>{
       src="${cate.image}"
       alt="Shoes"  class="h-48 w-48" />
   </figure>
-  <div class="card-body h-48 ">
-    <h2 class="card-title  flex justify-between">   
-      ${cate.category}
-      <div class="badge badge-secondary"><i class="fa-solid text-amber-400 fa-star"></i>${cate.rating.rate}(${cate.rating.count})</div>
-    </h2>
-    <p>${cate.title}</p>
-    <h1 class="font-bold">$${cate.price}</h1>
-    <div class="card-actions justify-between">
-      <button onclick="loadModal(${cate.id})" class="badge badge-outline"><i class="fa-solid fa-circle-info"></i>Details</button>
-      <button class="badge badge-outline"><i class="fa-solid fa-cart-shopping"></i>Add</button>
+  <div class="card-body h-auto ">
+   <div class=" flex justify-between">
+    <h2 class="card-title badge badge-primary font-thin text-xs">   
+      ${cate.category}</h2>
+      <div class="font-medium text-xs"><i class="fa-solid text-amber-400 fa-star"></i>${cate.rating.rate}(${cate.rating.count})</div>
+    
+    </div>
+    <p class="truncate font-medium">${cate.title}</p>
+    <h1 class="font-bold text-xl">$${cate.price}</h1>
+     <div class="card-actions   lg:justify-between">
+      <button onclick="loadModal(${cate.id})" class="flex-1 badge border-gray-400 text-slate-800 p-3 "><i class="fa-solid fa-circle-info"></i>Details</button>
+      <button class="flex-1 badge bg-blue-500 text-white p-3 "><i class="fa-solid fa-cart-shopping"></i>Add</button>
     </div>
   </div>
 </div>   
@@ -148,16 +151,17 @@ const displayAllProducts = (products)=>{
       src="${product.image}"
       alt="Shoes"  class="h-48 w-48" />
   </figure>
-  <div class="card-body h-48 ">
-    <h2 class="card-title flex justify-between">
-      ${product.category}
-      <div class="badge badge-secondary">${product.rating.rate}</div>
-    </h2>
-    <p>${product.title}</p>
-    <h1 class="font-bold">$${product.price}</h1>
-    <div class="card-actions justify-between">
-      <button onclick="loadModal(${product.id})" class="badge badge-outline"><i class="fa-solid fa-circle-info"></i>Details</button>
-      <button class="badge badge-outline"><i class="fa-solid fa-cart-shopping"></i>Add</button>
+  <div class="card-body h-auto ">
+    <div class="flex justify-between">
+    <h2 class="card-title badge badge-primary font-thin text-xs">
+      ${product.category}</h2>
+      <div class="font-medium text-xs">${product.rating.rate}(${product.rating.count})</div></div>
+    
+    <p class="truncate font-medium">${product.title}</p>
+    <h1 class="font-bold text-xl">$${product.price}</h1>
+    <div class="card-actions   lg:justify-between">
+      <button onclick="loadModal(${product.id})" class="flex-1 badge border-gray-400 text-slate-800 p-3 "><i class="fa-solid fa-circle-info"></i>Details</button>
+      <button class="flex-1 badge bg-blue-500 text-white p-3 "><i class="fa-solid fa-cart-shopping"></i>Add</button>
     </div>
   </div>
 </div>
@@ -167,6 +171,57 @@ const displayAllProducts = (products)=>{
     })
     
 }
+
+// filter 3 products
+
+const displayFilterProducts = (threeProducts => {
+    const topContainer = document.getElementById('top-container')
+    
+    threeProducts.forEach(three =>{
+        const cardsContainer = document.createElement('div')
+        cardsContainer.innerHTML=`
+        <div class="card bg-[#F9FAFB] lg:w-60  shadow-sm">
+  <figure>
+    <img
+      src="${three.image}"
+      alt="Shoes"  class="h-48 w-60 " />
+  </figure>
+  <div class="card-body h-auto ">
+    <div class="flex justify-between">
+    <h2 class="card-title badge badge-primary font-thin text-xs">
+      ${three.category}</h2>
+      <div class="font-medium text-xs">${three.rating.rate}(${three.rating.count})</div></div>
+    
+    <p class="truncate font-medium">${three.title}</p>
+    <h1 class="font-bold text-xl">$${three.price}</h1>
+    <div class="card-actions   lg:justify-between">
+      <button onclick="loadModal(${three.id})" class="flex-1 badge border-gray-400 text-slate-800 p-3 "><i class="fa-solid fa-circle-info"></i>Details</button>
+      <button class="flex-1 badge bg-blue-500 text-white p-3 "><i class="fa-solid fa-cart-shopping"></i>Add</button>
+    </div>
+  </div>
+</div>
+    `
+ topContainer.append(cardsContainer)
+    
+    })
+
+})
+
+const loadFilterProducts = async() =>{
+   try{
+     const res = await fetch('https://fakestoreapi.com/products')
+    const data = await res.json()
+
+    const filterRateProducts = data.filter(product=>product.rating.rate>=4.5)
+
+    const topThree = filterRateProducts.sort((a,b)=>b.rating.rate - a.rating.rate).slice(0,3)
+    displayFilterProducts(topThree)
+   }
+   catch(error){
+    console.log('error find!!!')
+   }
+}
+loadFilterProducts()
 
 
     
