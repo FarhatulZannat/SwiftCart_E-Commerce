@@ -1,3 +1,24 @@
+// active btn
+function removeActive(){
+  const activebtns = document.getElementsByClassName('active');
+
+  for(let btn of activebtns){
+    btn.classList.remove('active');
+  }
+}
+
+
+// loader
+const showLoader = ()=>{
+    document.getElementById('loader').classList.remove('hidden')
+    document.getElementById('product-card').classList.add('hidden')
+}
+const hideLoader = () => {
+    document.getElementById('loader').classList.add('hidden')
+    document.getElementById('product-card').classList.remove('hidden')
+}
+
+
 const loadCategories = ()=>{
     fetch("https://fakestoreapi.com/products/categories")
     .then(res=>res.json())
@@ -18,10 +39,21 @@ const displayCategories=(categories)=>{
     const categoriesContainer = document.getElementById("categories-container")
     document.getElementById('top').style.display='none'
     categoriesContainer.innerHTML=''
-    categoriesContainer.innerHTML = `
+    
      
-    <button onclick="loadAllProducts()" class="btn font-medium text-slate-800 border rounded-full">All</button>
-    `
+    
+    const allBtn = document.createElement('button')
+    allBtn.innerText = 'All'
+    allBtn.id = "btn-all"
+    allBtn.className ="category btn font-medium text-slate-800 border rounded-full" 
+
+    allBtn.addEventListener("click",()=>{
+        loadAllProducts()
+        removeActive()
+        allBtn.classList.add('active')
+    })
+    categoriesContainer.append(allBtn)
+    
 
     categories.forEach(cat => {
         // const catbtn = document.createElement('button')
@@ -32,10 +64,17 @@ const displayCategories=(categories)=>{
         // categoriesContainer.append(catbtn)
         const button = document.createElement('button')
         button.innerText= cat 
-        button.className = "btn font-medium text-slate-800 border rounded-full "
+        const safeId = cat.toLowerCase().replace(/\s+/g, '-');
+        button.id = `btn-${safeId}`;
+        button.className = "category btn font-medium text-slate-800 border rounded-full "
 
         button.addEventListener("click",()=>{
             loadCategoryProducts(cat)
+
+            removeActive(button)
+            
+            const  clickbtn = document.getElementById(`btn-${safeId}`);
+    clickbtn.classList.add('active')
         })
         categoriesContainer.append(button)
 
@@ -114,6 +153,7 @@ const displayCategoryProducts = (products)=>{
 }
 
 const loadCategoryProducts= async (category)=>{
+    showLoader()
     try{
         const res = await fetch(`https://fakestoreapi.com/products/category/${encodeURIComponent(category)}`)
     const data= await res.json()
@@ -122,9 +162,11 @@ const loadCategoryProducts= async (category)=>{
     catch(error){
         console.log('error found')
     }
+    hideLoader()
 }
 
 const loadAllProducts = async()=>{
+    showLoader()
     try{
         const res= await fetch('https://fakestoreapi.com/products')
         const data = await res.json()
@@ -133,6 +175,7 @@ const loadAllProducts = async()=>{
     catch(error){
         console.log('catching some error')
     }
+    hideLoader()
 
 }
 
